@@ -1,6 +1,0 @@
-@LTWalksApi_HostAddress = http://localhost:5182
-
-GET {{LTWalksApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
