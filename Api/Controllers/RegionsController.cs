@@ -2,6 +2,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Api.Models;
 using Api.Models.Domains;
+using Api.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers;
 
@@ -9,21 +11,15 @@ namespace Api.Controllers;
 [ApiController]
 public class RegionsController : ControllerBase
 {
+    private readonly LTWalksDbContext dbContext;
+    public RegionsController(LTWalksDbContext dbContext)
+    {
+        this.dbContext = dbContext;
+    }
     [HttpGet]
     public IActionResult GetAll()
     {
-        var regions = new List<Region>{
-            new Region{
-                Id = new Guid(),
-                Name = "Dzukija",
-                Code = "DZ",
-            },
-            new Region{
-                Id = new Guid(),
-                Name = "Aukstaitija",
-                Code = "AT",
-            }
-        };
+        var regions = dbContext.Regions.ToList();
 
         return Ok(regions);
     }
