@@ -1,7 +1,14 @@
+using Api.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Customer
+builder.Services.AddDbContext<LTWalksDbContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("LTWalksConnectionString")));
 
 var app = builder.Build();
 
