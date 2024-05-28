@@ -5,6 +5,7 @@ using Api.Models.Domains;
 using Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Api.Models.DTOs;
+using Api.Repositories;
 
 namespace Api.Controllers;
 
@@ -13,15 +14,18 @@ namespace Api.Controllers;
 public class RegionsController : ControllerBase
 {
     private readonly LTWalksDbContext dbContext;
-    public RegionsController(LTWalksDbContext dbContext)
+    private readonly IRegionRepository regionRepository;
+
+    public RegionsController(LTWalksDbContext dbContext, IRegionRepository regionRepository)
     {
         this.dbContext = dbContext;
+        this.regionRepository = regionRepository;
     }
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
         // Get data from database - domain models
-        var regionsDomain = await dbContext.Regions.ToListAsync();
+        var regionsDomain = await regionRepository.GetAllAsync();
 
         // Map Domain Models to DTO
         var regionsDto = new List<RegionDTO>();

@@ -1,6 +1,7 @@
 
 
 using Api.Data;
+using Api.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ builder.Services.AddSwaggerGen();
 // Custom
 builder.Services.AddDbContext<LTWalksDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("LTWalksConnectionString")));
+
+builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 
 var app = builder.Build();
 
