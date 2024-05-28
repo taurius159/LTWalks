@@ -48,9 +48,7 @@ public class RegionsController : ControllerBase
     [Route("{id:Guid}")]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
     {
-        // Get Region from Database
-        //var region = dbContext.Regions.Find(id); //find using primary key
-        var regionDomain = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id); //use LINQ
+        var regionDomain = await regionRepository.GetByIdAsync(id);
 
         if (regionDomain == null)
         {
@@ -81,8 +79,7 @@ public class RegionsController : ControllerBase
         };
 
         // use domain model to create Region
-        await dbContext.Regions.AddAsync(regionDomainModel);
-        await dbContext.SaveChangesAsync();
+        regionDomainModel = await regionRepository.CreateAsync(regionDomainModel);
 
         // map domain model to DTO
         var regionDto = new RegionDTO()
@@ -100,20 +97,21 @@ public class RegionsController : ControllerBase
     [Route("{id:Guid}")]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
     {
+        //map DTO to domain model for passing to repository for updating
+        var regionDomainModel = new Region()
+        {
+            Code = updateRegionRequestDto.Code,
+            Name = updateRegionRequestDto.Name,
+            RegionImageUrl = updateRegionRequestDto.RegionImageUrl
+        };
+        
         // check if region exists
-        var regionDomainModel = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+        regionDomainModel = await regionRepository.UpdateAsync(id, regionDomainModel);
 
         if (regionDomainModel == null)
         {
             return NotFound();
         }
-
-        //map DTO to domain model and save in db
-        regionDomainModel.Code = updateRegionRequestDto.Code;
-        regionDomainModel.Name = updateRegionRequestDto.Name;
-        regionDomainModel.RegionImageUrl = updateRegionRequestDto.RegionImageUrl;
-
-        await dbContext.SaveChangesAsync();
 
         //convert domain model to DTO
         var regionDto = new RegionDTO()
@@ -132,16 +130,12 @@ public class RegionsController : ControllerBase
     public async Task<IActionResult> Delete([FromRoute] Guid id)
     {
         // check if region exists
-        var regionDomainModel = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+        var regionDomainModel = await regionRepository.DeleteAsync(id);
 
-        if (regionDomainModel == null)
+        if(regionDomainModel == null)
         {
             return NotFound();
         }
-
-        //delete region
-        dbContext.Regions.Remove(regionDomainModel);
-        await dbContext.SaveChangesAsync();
 
         //convert domain model to DTO
         var regionDto = new RegionDTO()
