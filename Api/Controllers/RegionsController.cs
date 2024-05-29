@@ -93,7 +93,7 @@ public class RegionsController : ControllerBase
         }
 
         //convert domain model to DTO
-        var regionDto = mapper.Map<RegionDTO>(regionDomainModel);new RegionDTO();
+        var regionDto = mapper.Map<RegionDTO>(regionDomainModel);
 
         return Ok(regionDto);
     }

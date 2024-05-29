@@ -26,11 +26,33 @@ public class SQLWalkRepository : IWalkRepository
             .ToListAsync();
     }
 
-    public async Task<Walk> GetByIdAsync(Guid id)
+    public async Task<Walk?> GetByIdAsync(Guid id)
     {
         return await dbContext.Walks
             .Include(x => x.Region)
             .Include(x => x.Difficulty)
             .FirstOrDefaultAsync(x => x.Id == id); //use LINQ
+    }
+
+    public async Task<Walk?> UpdateAsync(Guid id, Walk walk)
+    {
+        // check if walk exists
+        var existingWalk = await dbContext.Walks.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (existingWalk == null)
+        {
+            return null;
+        }
+
+        //map DTO to domain model and save in db
+        existingWalk.Name = walk.Name;
+        existingWalk.Description = walk.Description;
+        existingWalk.LengthInKm = walk.LengthInKm;
+        existingWalk.WalkImageUrl = walk.WalkImageUrl;
+        existingWalk.DifficultyId = walk.DifficultyId;
+        existingWalk.RegionId = walk.RegionId;
+
+        await dbContext.SaveChangesAsync();
+        return existingWalk;
     }
 }
