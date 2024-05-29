@@ -83,4 +83,22 @@ public class WalksController : ControllerBase
 
         return Ok(walkDto);
     }
+
+    [HttpDelete]
+    [Route("{id:Guid}")]
+    public async Task<IActionResult> Delete([FromRoute] Guid id)
+    {
+        // attempt to delete the walk and consequently know if walk exists
+        var walkDomainModel = await walkRepository.DeleteAsync(id);
+
+        if(walkDomainModel == null)
+        {
+            return NotFound();
+        }
+
+        //convert domain model to DTO
+        var walkDto = mapper.Map<WalkDTO>(walkDomainModel);
+
+        return Ok(walkDto);
+    }
 }
