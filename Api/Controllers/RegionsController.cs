@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Api.Models.DTOs;
 using Api.Repositories;
 using AutoMapper;
+using api.CustomActionFilters;
 
 namespace Api.Controllers;
 
@@ -63,53 +64,41 @@ public class RegionsController : ControllerBase
     }
 
     [HttpPost]
+    [ValidateModel]
     public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto)
     {
-        if (ModelState.IsValid)
-        {
-            // map or convert DTO to Domain Model
-            var regionDomainModel = mapper.Map<Region>(addRegionRequestDto);
+        // map or convert DTO to Domain Model
+        var regionDomainModel = mapper.Map<Region>(addRegionRequestDto);
 
-            // use domain model to create Region
-            regionDomainModel = await regionRepository.CreateAsync(regionDomainModel);
+        // use domain model to create Region
+        regionDomainModel = await regionRepository.CreateAsync(regionDomainModel);
 
-            // map domain model to DTO
-            var regionDto = mapper.Map<RegionDTO>(regionDomainModel);
+        // map domain model to DTO
+        var regionDto = mapper.Map<RegionDTO>(regionDomainModel);
 
-            return CreatedAtAction(nameof(GetById), new {id = regionDto.Id}, regionDto);
-        }
-        else
-        {
-            return BadRequest(ModelState);
-        }
+        return CreatedAtAction(nameof(GetById), new {id = regionDto.Id}, regionDto);
     }
     
     [HttpPut]
     [Route("{id:Guid}")]
+    [ValidateModel]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
     {
-        if (ModelState.IsValid)
+        //map DTO to domain model for passing to repository for updating
+        var regionDomainModel = mapper.Map<Region>(updateRegionRequestDto);
+        
+        // check if region exists
+        regionDomainModel = await regionRepository.UpdateAsync(id, regionDomainModel);
+
+        if (regionDomainModel == null)
         {
-            //map DTO to domain model for passing to repository for updating
-            var regionDomainModel = mapper.Map<Region>(updateRegionRequestDto);
-            
-            // check if region exists
-            regionDomainModel = await regionRepository.UpdateAsync(id, regionDomainModel);
-
-            if (regionDomainModel == null)
-            {
-                return NotFound();
-            }
-
-            //convert domain model to DTO
-            var regionDto = mapper.Map<RegionDTO>(regionDomainModel);
-
-            return Ok(regionDto);
+            return NotFound();
         }
-        else
-        {
-            return BadRequest(ModelState);
-        }
+
+        //convert domain model to DTO
+        var regionDto = mapper.Map<RegionDTO>(regionDomainModel);
+
+        return Ok(regionDto);
     }
 
     [HttpDelete]
