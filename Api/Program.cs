@@ -1,6 +1,7 @@
 
 
 using Api.Data;
+using Api.Mappings;
 using Api.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,9 @@ builder.Services.AddDbContext<LTWalksDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("LTWalksConnectionString")));
 
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();
 
