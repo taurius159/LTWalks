@@ -38,5 +38,14 @@ public class WalksController : ControllerBase
 
         return Ok(walkDTO);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var walksDomainModels = await walkRepository.GetAllAsync();
+
+        //return map domain model to DTO
+        return Ok(mapper.Map<List<WalkDTO>>(walksDomainModels));
+    }
     
 }

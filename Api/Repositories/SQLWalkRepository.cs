@@ -18,4 +18,11 @@ public class SQLWalkRepository : IWalkRepository
 
         return walkDomainModel;
     }
+
+    public async Task<List<Walk>> GetAllAsync()
+    {
+        return await dbContext.Walks.Include(x => x.Difficulty)
+        .Include(x => x.Region)
+        .ToListAsync();
+    }
 }
