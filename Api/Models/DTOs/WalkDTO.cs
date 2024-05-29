@@ -3,6 +3,7 @@ using Api.Models.Domains;
 namespace Api.Models.DTOs;
 public class WalkDTO
 {
+    public Guid Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
     public double LengthInKm { get; set; }

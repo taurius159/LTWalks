@@ -22,7 +22,15 @@ public class SQLWalkRepository : IWalkRepository
     public async Task<List<Walk>> GetAllAsync()
     {
         return await dbContext.Walks.Include(x => x.Difficulty)
-        .Include(x => x.Region)
-        .ToListAsync();
+            .Include(x => x.Region)
+            .ToListAsync();
+    }
+
+    public async Task<Walk> GetByIdAsync(Guid id)
+    {
+        return await dbContext.Walks
+            .Include(x => x.Region)
+            .Include(x => x.Difficulty)
+            .FirstOrDefaultAsync(x => x.Id == id); //use LINQ
     }
 }

@@ -36,7 +36,7 @@ public class WalksController : ControllerBase
         // map domain model to DTO
         var walkDTO = mapper.Map<WalkDTO>(walkDomainModel);
 
-        return Ok(walkDTO);
+        return CreatedAtAction(nameof(GetById), new {id = walkDTO.Id}, walkDTO);
     }
 
     [HttpGet]
@@ -48,4 +48,18 @@ public class WalksController : ControllerBase
         return Ok(mapper.Map<List<WalkDTO>>(walksDomainModels));
     }
     
+    [HttpGet]
+    [Route("{id:Guid}")]
+    public async Task<IActionResult> GetById([FromRoute] Guid id)
+    {
+        var walkDomainModel = await walkRepository.GetByIdAsync(id);
+
+        if(walkDomainModel == null)
+        {
+            return NotFound();
+        }
+
+        //map domain model to DTO and return
+        return Ok(mapper.Map<WalkDTO>(walkDomainModel));
+    }
 }
