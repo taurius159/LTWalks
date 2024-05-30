@@ -24,7 +24,7 @@ public class AuthController : ControllerBase
         this.userManager = userManager;
     }
     
-    // POST: /api/auth/register
+    // POST: /api/Auth/Register
     [HttpPost]
     [Route("Register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequestDto registerRequestDto)
@@ -50,5 +50,26 @@ public class AuthController : ControllerBase
         }
 
         return BadRequest("Something went wrong");
+    }
+    // POST: /api/Auth/Login
+    [HttpPost]
+    [Route("Login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
+    {
+        var user = await userManager.FindByEmailAsync(loginRequestDto.username);
+
+        if(user != null)
+        {
+            var checkPasswordResult = await userManager.CheckPasswordAsync(user, loginRequestDto.password);
+            
+            if(checkPasswordResult)
+            {
+                //Create token
+
+                return Ok();
+            }
+        }
+
+        return BadRequest("username or password was incorrect.");
     }
 }
