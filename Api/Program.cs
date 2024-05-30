@@ -21,6 +21,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<LTWalksDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("LTWalksConnectionString")));
 
+builder.Services.AddDbContext<LTWalksAuthDbContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("LTWalksAuthConnectionString")));
+
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
 

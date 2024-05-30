@@ -5,7 +5,7 @@ namespace Api.Data;
 
 public class LTWalksDbContext : DbContext
 {
-    public LTWalksDbContext(DbContextOptions dbContextOptions) :base(dbContextOptions)
+    public LTWalksDbContext(DbContextOptions<LTWalksDbContext> dbContextOptions) :base(dbContextOptions)
     {
         
     }
