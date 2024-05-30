@@ -17,22 +17,35 @@ namespace Api.Controllers;
 [ApiController]
 public class ImagesController : ControllerBase
 {
+    private readonly IImageRepository imageRepository;
 
-    public ImagesController()
+    public ImagesController(IImageRepository imageRepository)
     {
-
+        this.imageRepository = imageRepository;
     }
     
     // POST: /api/Images/Upload
     [HttpPost]
     [Route("Upload")]
-    public async Task<IActionResult> Upload([FromBody] ImageUploadRequestDto request)
+    public async Task<IActionResult> Upload([FromForm] ImageUploadRequestDto request)
     {
-        ValidateFileUpload(request)
+        ValidateFileUpload(request);
 
         if (ModelState.IsValid)
         {
+            // Convert DTO to domain model of Image to be passed to repository
+            var imageDomainModel = new Image
+            {
+                File = request.File,
+                FileName = request.FileName,
+                FileDescription = request.FileDescription,
+                FileExtension = Path.GetExtension(request.File.FileName),
+                FileSizeInBytes = request.File.Length
+            };
+
             //User repository to add image
+            await imageRepository.Upload(imageDomainModel);
+            return Ok(imageDomainModel);
         }
 
         return BadRequest(ModelState);

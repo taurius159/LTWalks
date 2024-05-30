@@ -56,6 +56,7 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("LTWalksAuthConne
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddScoped<IImageRepository, LocalImageRepository>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
@@ -89,6 +90,8 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredUniqueChars = 2;
 }
 );
+
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
