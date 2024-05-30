@@ -8,6 +8,7 @@ using Api.Models.DTOs;
 using Api.Repositories;
 using AutoMapper;
 using api.CustomActionFilters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers;
 
@@ -26,6 +27,7 @@ public class RegionsController : ControllerBase
         this.mapper = mapper;
     }
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> GetAll()
     {
         // Get data from database - domain models
