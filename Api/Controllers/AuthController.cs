@@ -18,10 +18,12 @@ namespace Api.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly UserManager<IdentityUser> userManager;
+    private readonly ITokenRepository tokenRepository;
 
-    public AuthController(UserManager<IdentityUser> userManager)
+    public AuthController(UserManager<IdentityUser> userManager, ITokenRepository tokenRepository)
     {
         this.userManager = userManager;
+        this.tokenRepository = tokenRepository;
     }
     
     // POST: /api/Auth/Register
@@ -64,9 +66,21 @@ public class AuthController : ControllerBase
             
             if(checkPasswordResult)
             {
-                //Create token
+                // Get roles for this user
+                var roles = await userManager.GetRolesAsync(user);
 
-                return Ok();
+                if(roles != null)
+                {
+                    //Create token
+                    var jwtToken = tokenRepository.CreateJWTToken(user, roles.ToList());
+
+                    var response = new LoginResponseDTO
+                    {
+                        JwtToken = jwtToken
+                    };
+
+                    return Ok(response);
+                }
             }
         }
 
