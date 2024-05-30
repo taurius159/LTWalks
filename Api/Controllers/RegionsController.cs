@@ -19,36 +19,52 @@ public class RegionsController : ControllerBase
     private readonly LTWalksDbContext dbContext;
     private readonly IRegionRepository regionRepository;
     private readonly IMapper mapper;
+    private readonly ILogger<RegionsController> logger;
 
-    public RegionsController(LTWalksDbContext dbContext, IRegionRepository regionRepository, IMapper mapper)
+    public RegionsController(LTWalksDbContext dbContext, 
+    IRegionRepository regionRepository, 
+    IMapper mapper,
+    ILogger<RegionsController> logger)
     {
         this.dbContext = dbContext;
         this.regionRepository = regionRepository;
         this.mapper = mapper;
+        this.logger = logger;
     }
     [HttpGet]
-    [Authorize(Roles = "Reader, Writer")]
     public async Task<IActionResult> GetAll()
     {
-        // Get data from database - domain models
-        var regionsDomain = await regionRepository.GetAllAsync();
+        try
+        {
+            logger.LogInformation("GetAllMethod was called");
 
-        var regionsDto = mapper.Map<List<RegionDTO>>(regionsDomain);
-        // Map Domain Models to DTO
-        // var regionsDto = new List<RegionDTO>();
-        // foreach(var regionDomain in regionsDomain)
-        // {
-        //     regionsDto.Add(new RegionDTO()
-        //     {
-        //         Id = regionDomain.Id,
-        //         Code = regionDomain.Code,
-        //         Name = regionDomain.Name,
-        //         RegionImageUrl = regionDomain.RegionImageUrl
-        //     });
-        // }
+            throw new Exception("This is a custom exception");
 
-        // Return DTOs
-        return Ok(regionsDto);
+            // Get data from database - domain models
+            var regionsDomain = await regionRepository.GetAllAsync();
+
+            var regionsDto = mapper.Map<List<RegionDTO>>(regionsDomain);
+            // Map Domain Models to DTO
+            // var regionsDto = new List<RegionDTO>();
+            // foreach(var regionDomain in regionsDomain)
+            // {
+            //     regionsDto.Add(new RegionDTO()
+            //     {
+            //         Id = regionDomain.Id,
+            //         Code = regionDomain.Code,
+            //         Name = regionDomain.Name,
+            //         RegionImageUrl = regionDomain.RegionImageUrl
+            //     });
+            // }
+
+            // Return DTOs
+            return Ok(regionsDto);
+        }
+        catch(Exception ex)
+        {
+            logger.LogError(ex, ex.Message);
+            throw;
+        }
     }
 
     [HttpGet]

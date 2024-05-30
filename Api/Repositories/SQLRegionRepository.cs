@@ -1,3 +1,4 @@
+using Api.Controllers;
 using Api.Data;
 using Api.Models.Domains;
 using Microsoft.EntityFrameworkCore;
