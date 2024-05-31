@@ -1,6 +1,7 @@
 
 
 using System.Text;
+using api.Middlewares;
 using Api.Data;
 using Api.Mappings;
 using Api.Repositories;
@@ -112,6 +113,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//add global exception handling
+app.UseMiddleware<ExceptionHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 

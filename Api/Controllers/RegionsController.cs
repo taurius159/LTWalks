@@ -34,37 +34,29 @@ public class RegionsController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
-        try
-        {
-            logger.LogInformation("GetAllMethod was called");
+        logger.LogInformation("GetAllMethod was called");
 
-            throw new Exception("This is a custom exception");
+        throw new Exception("This is a custom exception");
 
-            // Get data from database - domain models
-            var regionsDomain = await regionRepository.GetAllAsync();
+        // Get data from database - domain models
+        var regionsDomain = await regionRepository.GetAllAsync();
 
-            var regionsDto = mapper.Map<List<RegionDTO>>(regionsDomain);
-            // Map Domain Models to DTO
-            // var regionsDto = new List<RegionDTO>();
-            // foreach(var regionDomain in regionsDomain)
-            // {
-            //     regionsDto.Add(new RegionDTO()
-            //     {
-            //         Id = regionDomain.Id,
-            //         Code = regionDomain.Code,
-            //         Name = regionDomain.Name,
-            //         RegionImageUrl = regionDomain.RegionImageUrl
-            //     });
-            // }
+        var regionsDto = mapper.Map<List<RegionDTO>>(regionsDomain);
+        // Map Domain Models to DTO
+        // var regionsDto = new List<RegionDTO>();
+        // foreach(var regionDomain in regionsDomain)
+        // {
+        //     regionsDto.Add(new RegionDTO()
+        //     {
+        //         Id = regionDomain.Id,
+        //         Code = regionDomain.Code,
+        //         Name = regionDomain.Name,
+        //         RegionImageUrl = regionDomain.RegionImageUrl
+        //     });
+        // }
 
-            // Return DTOs
-            return Ok(regionsDto);
-        }
-        catch(Exception ex)
-        {
-            logger.LogError(ex, ex.Message);
-            throw;
-        }
+        // Return DTOs
+        return Ok(regionsDto);
     }
 
     [HttpGet]
